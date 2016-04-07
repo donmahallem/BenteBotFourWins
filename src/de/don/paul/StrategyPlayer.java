@@ -2,7 +2,7 @@ package de.don.paul;
 
 import de.don.paul.tensors.BlockingTensor;
 import de.don.paul.tensors.FirstMoveTensor;
-import de.don.paul.tensors.MinMaxTensor;
+import de.don.paul.tensors.MinMaxTensor2;
 import de.don.paul.tensors.Tensor;
 
 import java.util.ArrayList;
@@ -17,9 +17,10 @@ public class StrategyPlayer extends Player {
 
     public StrategyPlayer(int player) {
         super(player);
-        this.mTensorList.add(new MinMaxTensor(player));
+        this.mTensorList.add(new MinMaxTensor2(player));
         this.mTensorList.add(new FirstMoveTensor(player));
         this.mTensorList.add(new BlockingTensor(player));
+        //this.mTensorList.add(new HorizontalTupelTensor(player));
         //this.mTensorList.add(new RandomTensor(player));
     }
 
@@ -34,7 +35,6 @@ public class StrategyPlayer extends Player {
             f.copy(field);
             f.put(i, this.mPlayerId);
             double val2 = calcColumn(f, i);
-            //System.out.println("Wert: "+i+" : "+val2);
             if (take == -1 || val < val2) {
                 take = i;
                 val = val2;

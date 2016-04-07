@@ -12,8 +12,10 @@ public class MinMaxTensor extends Tensor {
     }
 
 
-    public double intTakeTurn(Field field, int currentPlayer, int depth) {
+    public double intTakeTurn(Field field, int currentPlayer, int depth, double alpha, double beta) {
         //System.out.println(depth+" - "+currentPlayer);
+        if (beta > alpha)
+            return 0;
         if (depth > 6)
             return 0.5d;
         final int state = field.getState(this.mPlayerId);
@@ -30,21 +32,22 @@ public class MinMaxTensor extends Tensor {
         }
         double sum = 0;
         double take = 0;
+        Field f = new Field();
         for (int x = 0; x < Field.WIDTH; x++) {
             if (field.isColumnFull(x)) {
                 continue;
             }
             take++;
-            Field f = field.clone();
+            f.copy(field);
             f.put(x, currentPlayer);
-            sum += intTakeTurn(f, currentPlayer == 1 ? 2 : 1, depth + 1);
+            sum += intTakeTurn(f, currentPlayer == 1 ? 2 : 1, depth + 1, alpha, beta);
         }
         return sum / take;
     }
 
     @Override
     public double evaluate(Field field, int take) {
-        return intTakeTurn(field, this.mPlayerId == 1 ? 2 : 1, 0);
+        return intTakeTurn(field, this.mPlayerId == 1 ? 2 : 1, 0, Double.MAX_VALUE, Double.MIN_VALUE);
     }
 
     @Override

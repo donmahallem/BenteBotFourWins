@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="FourWins:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/FourWins_jar</output-path>
+    <root id="archive" name="FourWins.jar">
+      <element id="module-output" name="FourWins" />
+    </root>
+  </artifact>
+</component>

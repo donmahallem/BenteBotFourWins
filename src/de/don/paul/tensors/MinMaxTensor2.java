@@ -2,14 +2,10 @@ package de.don.paul.tensors;
 
 import de.don.paul.Field;
 
-import java.util.HashMap;
-
 /**
  * Created by Don on 01.04.2016.
  */
 public class MinMaxTensor2 extends Tensor {
-
-    private HashMap<Integer, Double> mMemory = new HashMap<>();
 
     public MinMaxTensor2(int player) {
         super(player);
@@ -105,35 +101,32 @@ public class MinMaxTensor2 extends Tensor {
     }
 
     private double getMemoryValue(int... values) {
-        final int rowId = createId(values);
-        if (this.mMemory.containsKey(rowId))
-            return this.mMemory.get(rowId);
         int[] occ = new int[4];
         for (int i = 0; i < values.length; i++) {
             occ[values[i]]++;
         }
-        double val = 0;
+        final int enemyId = this.mPlayerId == 1 ? 2 : 1;
         if (occ[0] == 4 || occ[3] == 4) {
-            val = 0.5;
-        } else if (occ[1] == 4) {
-            val = 1;
-        } else if (occ[2] == 4) {
-            val = 0;
-        } else if (occ[1] == 3 && (occ[0] == 1 || occ[3] == 1)) {
-            val = 0.8;
-        } else if (occ[2] == 3 && (occ[0] == 1 || occ[3] == 1)) {
-            val = 0.2;
-        } else if (occ[1] == 2 && occ[2] == 0) {
-            val = 0.7;
-        } else if (occ[2] == 2 && occ[1] == 0) {
-            val = 0.3;
-        } else if (occ[1] == 2 && occ[2] == 1) {
-            val = 0.6;
+            return 0.5;
+        } else if (occ[this.mPlayerId] == 4) {
+            return 1;
+        } else if (occ[enemyId] == 4) {
+            return 0;
+        } else if (occ[this.mPlayerId] == 3 && (occ[0] == 1 || occ[3] == 1)) {
+            return 0.8;
+        } else if (occ[enemyId] == 3 && (occ[0] == 1 || occ[3] == 1)) {
+            return 0.2;
+        } else if (occ[this.mPlayerId] == 2 && occ[enemyId] == 0) {
+            return 0.7;
+        } else if (occ[enemyId] == 2 && occ[this.mPlayerId] == 0) {
+            return 0.3;
+        } else if (occ[this.mPlayerId] == 2 && occ[enemyId] == 1) {
+            return 0.6;
+        } else if (occ[enemyId] == 2 && occ[this.mPlayerId] == 1) {
+            return 0.4;
         } else {
-            val = 0.5;
+            return 0.5;
         }
-        this.mMemory.put(rowId, val);
-        return val;
     }
 
     @Override

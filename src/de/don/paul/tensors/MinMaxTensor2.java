@@ -7,8 +7,15 @@ import de.don.paul.Field;
  */
 public class MinMaxTensor2 extends Tensor {
 
+    private final double[] mWeights;
+
     public MinMaxTensor2(int player) {
-        super(player);
+        this(player, 0.9, 0.8, 0.7, 0.6);
+    }
+
+    public MinMaxTensor2(int pPlayer, double... weights) {
+        super(pPlayer);
+        this.mWeights = weights;
     }
 
     public double intTakeTurn(Field field, int currentPlayer, int depth, double alpha, double beta) {
@@ -112,18 +119,22 @@ public class MinMaxTensor2 extends Tensor {
             return 1;
         } else if (occ[enemyId] == 4) {
             return 0;
-        } else if (occ[this.mPlayerId] == 3 && (occ[0] == 1 || occ[3] == 1)) {
-            return 0.8;
-        } else if (occ[enemyId] == 3 && (occ[0] == 1 || occ[3] == 1)) {
-            return 0.2;
+        } else if (occ[this.mPlayerId] == 3 && occ[0] == 1) {
+            return this.mWeights[0];
+        } else if (occ[enemyId] == 3 && occ[0] == 1) {
+            return 1 - this.mWeights[0];
+        } else if (occ[this.mPlayerId] == 3 && occ[3] == 1) {
+            return this.mWeights[1];
+        } else if (occ[enemyId] == 3 && occ[3] == 1) {
+            return 1 - this.mWeights[1];
         } else if (occ[this.mPlayerId] == 2 && occ[enemyId] == 0) {
-            return 0.7;
+            return this.mWeights[2];
         } else if (occ[enemyId] == 2 && occ[this.mPlayerId] == 0) {
-            return 0.3;
+            return 1 - this.mWeights[2];
         } else if (occ[this.mPlayerId] == 2 && occ[enemyId] == 1) {
-            return 0.6;
+            return this.mWeights[3];
         } else if (occ[enemyId] == 2 && occ[this.mPlayerId] == 1) {
-            return 0.4;
+            return 1 - this.mWeights[3];
         } else {
             return 0.5;
         }

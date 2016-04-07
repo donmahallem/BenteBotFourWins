@@ -1,9 +1,6 @@
 package de.don.paul;
 
-import de.don.paul.tensors.BlockingTensor;
-import de.don.paul.tensors.FirstMoveTensor;
-import de.don.paul.tensors.MinMaxTensor2;
-import de.don.paul.tensors.Tensor;
+import de.don.paul.tensors.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +12,12 @@ public class StrategyPlayer extends Player {
 
     private List<Tensor> mTensorList = new ArrayList();
 
-    public StrategyPlayer(int player) {
+    public StrategyPlayer(int player, double... weights) {
         super(player);
-        this.mTensorList.add(new MinMaxTensor2(player));
+        this.mTensorList.add(new MinMaxTensor2(player, weights));
         this.mTensorList.add(new FirstMoveTensor(player));
         this.mTensorList.add(new BlockingTensor(player));
+        this.mTensorList.add(new WinningTensor(player));
         //this.mTensorList.add(new HorizontalTupelTensor(player));
         //this.mTensorList.add(new RandomTensor(player));
     }
@@ -34,6 +32,7 @@ public class StrategyPlayer extends Player {
                 continue;
             f.copy(field);
             f.put(i, this.mPlayerId);
+            //System.err.println("Column - "+i);
             double val2 = calcColumn(f, i);
             if (take == -1 || val < val2) {
                 take = i;
@@ -48,6 +47,7 @@ public class StrategyPlayer extends Player {
         for (Tensor lTensor : this.mTensorList) {
             double v = lTensor.evaluate(pF, take);
             //System.out.println(lTensor.getName()+" - "+v);
+            //System.err.println(lTensor.getName()+" - "+v);
             res += v;
         }
         return res / (1d * this.mTensorList.size());

@@ -2,6 +2,9 @@ package de.don.paul;
 
 import de.don.paul.tensors.MinMaxTensor;
 
+import java.util.Arrays;
+import java.util.Random;
+
 public class Main {
 
     public static void main(String[] args) throws Exception {
@@ -12,11 +15,43 @@ public class Main {
             Player[] players = new Player[2];
             //HashMap<Integer,HashMap<Integer,Double>> memory=LearningPlayer.loadMemory(new File("test.csv"));
             //players[1]=new LearningPlayer(1,memory,false);
-            players[0] = new StrategyPlayer(1);
+            double[] weights = new double[4];
+            weights[0] = 0.9;
+            weights[1] = 0.8;
+            weights[2] = 0.7;
+            weights[3] = 0.6;
+            players[0] = new StrategyPlayer(1, weights);
             players[1] = new UserPlayer(2);//RandomPlayer(2,System.currentTimeMillis());
             Field lField = new Field();
             System.out.println(lField.getState(1));
             System.out.println(playMatch(players[0], players[1]));
+        } else if (args.length > 0 && args[0].equals("tryWeights")) {
+            Field field = new Field();
+            Player[] players = new Player[2];
+            double[] weights = new double[4];
+            weights[0] = 0.75;
+            weights[1] = 0.75;
+            weights[2] = 0.75;
+            weights[3] = 0.75;
+            Random lRandom = new Random();
+            for (int i = 0; i < 1000; i++) {
+                double[] testWeights = new double[4];
+                testWeights[0] = lRandom.nextDouble();
+                testWeights[1] = lRandom.nextDouble() * testWeights[0];
+                testWeights[2] = lRandom.nextDouble() * testWeights[1];
+                testWeights[3] = lRandom.nextDouble() * testWeights[2];
+                for (int a = 0; a < testWeights.length; a++) {
+                    testWeights[a] = testWeights[a] * 0.5d + 0.5d;
+                }
+                players[0] = new StrategyPlayer(1, weights);
+                players[1] = new StrategyPlayer(2, testWeights);
+                if (playMatch(players[i % 2], players[(i + 1) % 2]) == 2) {
+                    weights = testWeights;
+                    System.out.println(i + " rand better: " + Arrays.toString(weights));
+                }
+                System.out.println("old better");
+            }
+            System.out.println(Arrays.toString(weights));
         } else {
             new TheBot().start();
         }

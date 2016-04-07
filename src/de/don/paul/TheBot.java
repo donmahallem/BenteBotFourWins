@@ -30,7 +30,7 @@ public class TheBot {
                     break;
                 case "action":
                     Field f = new Field(BotStatus.getGameField());
-                    mPlayer = new StrategyPlayer(BotStatus.getYourBotId());
+                    mPlayer = new StrategyPlayer(BotStatus.getYourBotId(), 0.5825766988972447, 0.5327407712084312, 0.5219438391085487, 0.515127326801309);
                     System.out.println("place_disc " + mPlayer.takeTurn(f));
                     break;
                 default:

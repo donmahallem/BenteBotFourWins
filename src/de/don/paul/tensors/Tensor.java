@@ -13,6 +13,7 @@ public abstract class Tensor {
         this.mPlayerId = pPlayer;
     }
 
+
     public abstract double evaluate(Field field, int take);
 
     public abstract String getName();

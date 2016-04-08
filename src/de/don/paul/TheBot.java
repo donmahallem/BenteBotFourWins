@@ -30,7 +30,16 @@ public class TheBot {
                     break;
                 case "action":
                     Field f = new Field(BotStatus.getGameField());
-                    mPlayer = new StrategyPlayer(BotStatus.getYourBotId(), 0.5825766988972447, 0.5327407712084312, 0.5219438391085487, 0.515127326801309);
+                    double[] weights = new double[5];
+                    weights[0] = 1;
+                    weights[1] = weights[0] / 3d * 2d;
+                    weights[2] = weights[1] / 3d * 2d;
+                    weights[3] = weights[2] / 3d * 2d;
+                    weights[4] = weights[3] / 3d * 2d;
+                    for (int i = 0; i < weights.length; i++) {
+                        weights[i] = 0.5 + (weights[i] / 2);
+                    }
+                    mPlayer = new StrategyPlayer(BotStatus.getYourBotId(), weights);
                     System.out.println("place_disc " + mPlayer.takeTurn(f));
                     break;
                 default:

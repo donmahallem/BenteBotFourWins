@@ -3,7 +3,6 @@ package de.don.paul;
 import de.don.paul.tensors.MinMaxTensor;
 
 import java.util.Arrays;
-import java.util.Random;
 
 public class Main {
 
@@ -28,28 +27,21 @@ public class Main {
         } else if (args.length > 0 && args[0].equals("tryWeights")) {
             Field field = new Field();
             Player[] players = new Player[2];
-            double[] weights = new double[4];
-            weights[0] = 0.75;
-            weights[1] = 0.75;
-            weights[2] = 0.75;
-            weights[3] = 0.75;
-            Random lRandom = new Random();
-            for (int i = 0; i < 1000; i++) {
-                double[] testWeights = new double[4];
-                testWeights[0] = lRandom.nextDouble();
-                testWeights[1] = lRandom.nextDouble() * testWeights[0];
-                testWeights[2] = lRandom.nextDouble() * testWeights[1];
-                testWeights[3] = lRandom.nextDouble() * testWeights[2];
-                for (int a = 0; a < testWeights.length; a++) {
-                    testWeights[a] = testWeights[a] * 0.5d + 0.5d;
-                }
+            double[] weights = new double[5];
+            weights[0] = 1;
+            weights[1] = weights[0] / 3d * 2d;
+            weights[2] = weights[1] / 3d * 2d;
+            weights[3] = weights[2] / 3d * 2d;
+            weights[4] = weights[3] / 3d * 2d;
+            for (int i = 0; i < weights.length; i++) {
+                weights[i] = 0.5 + (weights[i] / 2);
+            }
+            System.out.println(Arrays.toString(weights));
+            for (int i = 0; i < 100; i++) {
                 players[0] = new StrategyPlayer(1, weights);
-                players[1] = new StrategyPlayer(2, testWeights);
-                if (playMatch(players[i % 2], players[(i + 1) % 2]) == 2) {
-                    weights = testWeights;
-                    System.out.println(i + " rand better: " + Arrays.toString(weights));
-                }
-                System.out.println("old better");
+                players[1] = new StrategyPlayer(2, weights);
+                int result = playMatch(players[i % 2], players[(i + 1) % 2]);
+                System.out.println(i + " - center: " + result);
             }
             System.out.println(Arrays.toString(weights));
         } else {

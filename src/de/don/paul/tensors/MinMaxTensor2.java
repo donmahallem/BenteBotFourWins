@@ -107,34 +107,51 @@ public class MinMaxTensor2 extends Tensor {
         return result;
     }
 
+    private boolean patternMatch(int[] block, int... pattern) {
+        return (pattern[0] == block[0]
+                && block[1] == pattern[1]
+                && block[2] == pattern[2]
+                && block[3] == pattern[3]);
+    }
+
     private double getMemoryValue(int... values) {
         int[] occ = new int[4];
         for (int i = 0; i < values.length; i++) {
             occ[values[i]]++;
         }
         final int enemyId = this.mPlayerId == 1 ? 2 : 1;
-        if (occ[0] == 4 || occ[3] == 4) {
-            return 0.5;
-        } else if (occ[this.mPlayerId] == 4) {
-            return 1;
-        } else if (occ[enemyId] == 4) {
-            return 0;
-        } else if (occ[this.mPlayerId] == 3 && occ[0] == 1) {
+        if (occ[this.mPlayerId] == 4) {
             return this.mWeights[0];
-        } else if (occ[enemyId] == 3 && occ[0] == 1) {
+        } else if (occ[enemyId] == 4) {
             return 1 - this.mWeights[0];
-        } else if (occ[this.mPlayerId] == 3 && occ[3] == 1) {
+        } else if (occ[0] == 4) {
+            return 0.5;
+        } else if (occ[3] == 4) {
+            return 0.5;
+        } else if (occ[this.mPlayerId] == 3
+                && occ[enemyId] == 0) {
             return this.mWeights[1];
-        } else if (occ[enemyId] == 3 && occ[3] == 1) {
+        } else if (occ[enemyId] == 3
+                && occ[this.mPlayerId] == 0) {
             return 1 - this.mWeights[1];
-        } else if (occ[this.mPlayerId] == 2 && occ[enemyId] == 0) {
+        } else if (occ[this.mPlayerId] == 3
+                && occ[enemyId] == 1) {
             return this.mWeights[2];
-        } else if (occ[enemyId] == 2 && occ[this.mPlayerId] == 0) {
+        } else if (occ[enemyId] == 3
+                && occ[this.mPlayerId] == 1) {
             return 1 - this.mWeights[2];
-        } else if (occ[this.mPlayerId] == 2 && occ[enemyId] == 1) {
+        } else if (occ[this.mPlayerId] == 2
+                && occ[enemyId] == 0) {
             return this.mWeights[3];
-        } else if (occ[enemyId] == 2 && occ[this.mPlayerId] == 1) {
+        } else if (occ[enemyId] == 2
+                && occ[this.mPlayerId] == 0) {
             return 1 - this.mWeights[3];
+        } else if (occ[this.mPlayerId] == 2
+                && occ[enemyId] == 1) {
+            return this.mWeights[4];
+        } else if (occ[enemyId] == 2
+                && occ[this.mPlayerId] == 1) {
+            return 1 - this.mWeights[4];
         } else {
             return 0.5;
         }

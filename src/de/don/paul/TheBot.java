@@ -29,7 +29,8 @@ public class TheBot {
                     BotStatus.parse(parts);
                     break;
                 case "action":
-                    Field f = new Field(BotStatus.getGameField());
+                    Field f = Field.obtain();
+                    f.set(BotStatus.getGameField());
                     double[] weights = new double[5];
                     weights[0] = 1;
                     weights[1] = weights[0] / 3d * 2d;
@@ -41,6 +42,7 @@ public class TheBot {
                     }
                     mPlayer = new StrategyPlayer(BotStatus.getYourBotId(), weights);
                     System.out.println("place_disc " + mPlayer.takeTurn(f));
+                    Field.free(f);
                     break;
                 default:
                     break;

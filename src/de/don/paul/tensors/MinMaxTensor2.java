@@ -63,7 +63,7 @@ public class MinMaxTensor2 extends Tensor {
         if (this.mPlayerId == currentPlayer) {
             //MAXIMIZING PLAYER
             double val = Double.MIN_VALUE;
-            Field f = new Field();
+            Field f = Field.obtain();
             for (int x = 0; x < Field.WIDTH; x++) {
                 if (field.isColumnFull(x)) {
                     continue;
@@ -77,11 +77,12 @@ public class MinMaxTensor2 extends Tensor {
                     break;
                 }
             }
+            Field.free(f);
             return val;
         } else {
             //MINIMIZING PLAYER
             double val = Double.MAX_VALUE;
-            Field f = new Field();
+            Field f = Field.obtain();
             for (int x = 0; x < Field.WIDTH; x++) {
                 if (field.isColumnFull(x)) {
                     continue;
@@ -95,6 +96,7 @@ public class MinMaxTensor2 extends Tensor {
                     break;
                 }
             }
+            Field.free(f);
             return val;
         }
     }

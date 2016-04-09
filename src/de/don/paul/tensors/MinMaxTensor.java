@@ -32,7 +32,7 @@ public class MinMaxTensor extends Tensor {
         }
         double sum = 0;
         double take = 0;
-        Field f = new Field();
+        Field f = Field.obtain();
         for (int x = 0; x < Field.WIDTH; x++) {
             if (field.isColumnFull(x)) {
                 continue;
@@ -42,6 +42,7 @@ public class MinMaxTensor extends Tensor {
             f.put(x, currentPlayer);
             sum += intTakeTurn(f, currentPlayer == 1 ? 2 : 1, depth + 1, alpha, beta);
         }
+        Field.free(f);
         return sum / take;
     }
 

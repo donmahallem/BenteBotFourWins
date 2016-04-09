@@ -1,25 +1,39 @@
 package de.don.paul;
 
+import de.don.paul.util.Pool;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Field implements Comparable<Field>, Cloneable {
+public class Field implements Comparable<Field>, Cloneable, Pool.Poolable {
     public final static int WIDTH = 7, HEIGHT = 6;
     public final static int STATE_LOSS = 0, STATE_DRAW = 1, STATE_WIN = 2, STATE_OPEN = 3;
     public final static int VALUE_P1 = 1,
             VALUE_P2 = 2,
             VALUE_UNREACHABLE = 3,
             VALUE_OPEN = 0;
+    final static int ROW_1 = Field.WIDTH;
+    final static int ROW_2 = Field.WIDTH * 2;
+    final static int ROW_3 = Field.WIDTH * 3;
+    private static FieldPool mFieldPool = new FieldPool();
     private final int[] mField;
     private boolean mNormalized = false;
 
-    public Field() {
+    private Field() {
         this(new int[WIDTH * HEIGHT]);
     }
 
-    public Field(int[] ints) {
+    private Field(int[] ints) {
         this.mField = ints;
+    }
+
+    public static Field obtain() {
+        return mFieldPool.obtain();
+    }
+
+    public static void free(Field field) {
+        mFieldPool.free(field);
     }
 
     public static List<String> getChildIds(Field field, int playerId) {
@@ -47,6 +61,17 @@ public class Field implements Comparable<Field>, Cloneable {
             field.mField[i] = (val & (i % 2 == 0 ? 12 : 3)) >> (i % 2 == 0 ? 2 : 0);
         }
         return field;
+    }
+
+    public void set(int[] pGameField) {
+        for (int i = 0; i < pGameField.length; i++)
+            this.mField[i] = pGameField[i];
+    }
+
+    @Override
+    public void reset() {
+        for (int i = 0; i < this.mField.length; i++)
+            this.mField[i] = 0;
     }
 
     public int[] getField() {
@@ -154,35 +179,43 @@ public class Field implements Comparable<Field>, Cloneable {
     }
 
     public int getState(int player) {
-        for (int x = 0; x < WIDTH; x++) {
+        int startPosition = 0;
+        for (int x = 0; x < 4; x++) {
             for (int y = 0; y < HEIGHT; y++) {
-                //CHECK HORIZONTAL
+                startPosition = (y * Field.WIDTH) + x;
                 if (x < WIDTH - 4) {
-                    if (this.mField[(y * WIDTH) + x] != 0
-                            && this.mField[(y * WIDTH) + x] == this.mField[(y * WIDTH) + x + 1]
-                            && this.mField[(y * WIDTH) + x] == this.mField[(y * WIDTH) + x + 2]
-                            && this.mField[(y * WIDTH) + x] == this.mField[(y * WIDTH) + x + 3])
-                        return this.mField[(y * WIDTH) + x] == player ? Field.STATE_WIN : Field.STATE_LOSS;
+                    if (this.mField[startPosition] != 0
+                            && this.mField[startPosition] == this.mField[startPosition + 1]
+                            && this.mField[startPosition] == this.mField[startPosition + 2]
+                            && this.mField[startPosition] == this.mField[startPosition + 3])
+                        return this.mField[startPosition] == player ? Field.STATE_WIN : Field.STATE_LOSS;
                 }
-                if (y < HEIGHT - 4) {
-                    if (this.mField[(y * WIDTH) + x] != 0
-                            && this.mField[(y * WIDTH) + x] == this.mField[((y + 1) * WIDTH) + x]
-                            && this.mField[(y * WIDTH) + x] == this.mField[((y + 2) * WIDTH) + x]
-                            && this.mField[(y * WIDTH) + x] == this.mField[((y + 3) * WIDTH) + x])
-                        return this.mField[(y * WIDTH) + x] == player ? Field.STATE_WIN : Field.STATE_LOSS;
+                //CHECK VERTICALLY
+                else if (y < HEIGHT - 4) {
+                    if (this.mField[startPosition] != 0
+                            && this.mField[startPosition] == this.mField[startPosition + ROW_1]
+                            && this.mField[startPosition] == this.mField[startPosition + ROW_2]
+                            && this.mField[startPosition] == this.mField[startPosition + ROW_3])
+                        return this.mField[startPosition] == player ? Field.STATE_WIN : Field.STATE_LOSS;
+                    else if (x < 3 // MID WILL BE CHECK BY FIRST CONDITION
+                            && this.mField[startPosition + 3] != 0
+                            && this.mField[startPosition + 3] == this.mField[startPosition + ROW_1 + 3]
+                            && this.mField[startPosition + 3] == this.mField[startPosition + ROW_2 + 3]
+                            && this.mField[startPosition + 3] == this.mField[startPosition + ROW_3 + 3])
+                        return this.mField[startPosition + 3] == player ? Field.STATE_WIN : Field.STATE_LOSS;
                 }
                 //LEFT UP RIGHT DOWN
                 if (x < WIDTH - 4 && y < HEIGHT - 4) {
-                    if (this.mField[(y * WIDTH) + x] != 0
-                            && this.mField[(y * WIDTH) + x] == this.mField[((y + 1) * WIDTH) + x + 1]
-                            && this.mField[(y * WIDTH) + x] == this.mField[((y + 2) * WIDTH) + x + 2]
-                            && this.mField[(y * WIDTH) + x] == this.mField[((y + 3) * WIDTH) + x + 3])
-                        return this.mField[(y * WIDTH) + x] == player ? Field.STATE_WIN : Field.STATE_LOSS;
-                    else if (this.mField[(y * WIDTH) + x + 3] != 0
-                            && this.mField[(y * WIDTH) + x + 3] == this.mField[((y + 1) * WIDTH) + x + 2]
-                            && this.mField[(y * WIDTH) + x + 3] == this.mField[((y + 2) * WIDTH) + x + 1]
-                            && this.mField[(y * WIDTH) + x + 3] == this.mField[((y + 3) * WIDTH) + x])
-                        return this.mField[(y * WIDTH) + x + 3] == player ? Field.STATE_WIN : Field.STATE_LOSS;
+                    if (this.mField[startPosition] != 0
+                            && this.mField[startPosition] == this.mField[startPosition + 8]
+                            && this.mField[startPosition] == this.mField[startPosition + 16]
+                            && this.mField[startPosition] == this.mField[startPosition + 24])
+                        return this.mField[startPosition] == player ? Field.STATE_WIN : Field.STATE_LOSS;
+                    else if (this.mField[startPosition + 3] != 0
+                            && this.mField[startPosition + 3] == this.mField[startPosition + 9]
+                            && this.mField[startPosition + 3] == this.mField[startPosition + 15]
+                            && this.mField[startPosition + 3] == this.mField[startPosition + 21])
+                        return this.mField[startPosition + 3] == player ? Field.STATE_WIN : Field.STATE_LOSS;
                 }
             }
         }
@@ -249,5 +282,12 @@ public class Field implements Comparable<Field>, Cloneable {
                 return y;
         }
         return 0;
+    }
+
+    private static class FieldPool extends Pool<Field> {
+        @Override
+        protected Field create() {
+            return new Field();
+        }
     }
 }

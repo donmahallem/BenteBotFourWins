@@ -16,7 +16,7 @@ public class HorizontalTupelTensor extends Tensor {
     }
 
     @Override
-    public double evaluate(Field field, int take) {
+    public double evaluate(Field field, int take, int turn) {
         double result = takeTurnInt(field);
         return (this.mPlayerId == 1) ? result : (1 - result);
     }

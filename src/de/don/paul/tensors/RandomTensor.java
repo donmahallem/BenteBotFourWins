@@ -15,7 +15,7 @@ public class RandomTensor extends Tensor {
     }
 
     @Override
-    public double evaluate(Field field, int take) {
+    public double evaluate(Field field, int take, int turn) {
         return this.mRandom.nextDouble();
     }
 

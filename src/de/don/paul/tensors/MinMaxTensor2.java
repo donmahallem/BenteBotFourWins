@@ -8,6 +8,7 @@ import de.don.paul.Field;
 public class MinMaxTensor2 extends Tensor {
 
     private final double[] mWeights;
+    private int mBreakDepth = 6;
 
     public MinMaxTensor2(int player) {
         this(player, 0.9, 0.8, 0.7, 0.6);
@@ -32,7 +33,7 @@ public class MinMaxTensor2 extends Tensor {
                 //System.out.println("Win");
                 return 1d;
         }
-        if (depth > 6) {
+        if (depth > this.mBreakDepth) {
             double num = 0, sum = 0;
             for (int x = 0; x < Field.WIDTH; x++) {
                 for (int y = 0; y < Field.HEIGHT; y++) {
@@ -160,7 +161,12 @@ public class MinMaxTensor2 extends Tensor {
     }
 
     @Override
-    public double evaluate(Field field, int take) {
+    public double evaluate(Field field, int take, int turn) {
+        if (turn > 10) {
+            this.mBreakDepth = 7;
+        } else if (turn > 15) {
+            this.mBreakDepth = 8;
+        }
         return intTakeTurn(field, this.mPlayerId == 1 ? 2 : 1, 0, Double.MIN_VALUE, Double.MAX_VALUE);
     }
 

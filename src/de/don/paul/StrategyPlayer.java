@@ -23,31 +23,33 @@ public class StrategyPlayer extends Player {
     }
 
     @Override
-    public int takeTurn(Field field) {
+    public int takeTurn(Field field, int turn) {
         Field f = field.clone();
         double val = 0;
+        final long startTime = System.currentTimeMillis();
         int take = -1;
         for (int i = 0; i < Field.WIDTH; i++) {
             if (field.isColumnFull(i))
                 continue;
             f.copy(field);
             f.put(i, this.mPlayerId);
-            //System.err.println("Column - "+i);
-            double val2 = calcColumn(f, i);
+            double val2 = calcColumn(f, i, turn);
+            System.err.println("Column - " + i + " = " + val2);
             if (take == -1 || val < val2) {
                 take = i;
                 val = val2;
             }
         }
+        System.err.println("Took " + ((System.currentTimeMillis() - startTime) / 1000d) + "s");
         return take;
     }
 
-    private double calcColumn(Field pF, int take) {
+    private double calcColumn(Field pF, int take, int turn) {
         double res = 0;
         for (Tensor lTensor : this.mTensorList) {
-            double v = lTensor.evaluate(pF, take);
+            double v = lTensor.evaluate(pF, take, turn);
             //System.out.println(lTensor.getName()+" - "+v);
-            //System.err.println(lTensor.getName()+" - "+v);
+            System.err.println(lTensor.getName() + " - " + v);
             res += v;
         }
         return res / (1d * this.mTensorList.size());

@@ -14,7 +14,7 @@ public abstract class Tensor {
     }
 
 
-    public abstract double evaluate(Field field, int take);
+    public abstract double evaluate(Field field, int take, int turn);
 
     public abstract String getName();
 }

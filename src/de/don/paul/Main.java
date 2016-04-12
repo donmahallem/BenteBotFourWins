@@ -1,7 +1,5 @@
 package de.don.paul;
 
-import de.don.paul.tensors.MinMaxTensor;
-
 import java.util.Arrays;
 
 public class Main {
@@ -10,8 +8,6 @@ public class Main {
         if (args.length > 0 && args[0].equals("playit")) {
             System.out.println("Play It");
             Field field = Field.obtain();
-            MinMaxTensor lMinMaxTensor = new MinMaxTensor(1);
-            System.out.println(lMinMaxTensor.evaluate(field, 1));
             Player[] players = new Player[2];
             //HashMap<Integer,HashMap<Integer,Double>> memory=LearningPlayer.loadMemory(new File("test.csv"));
             //players[1]=new LearningPlayer(1,memory,false);
@@ -21,13 +17,14 @@ public class Main {
             weights[2] = weights[1] / 3d * 2d;
             weights[3] = weights[2] / 3d * 2d;
             weights[4] = weights[3] / 3d * 2d;
+            for (int i = 0; i < weights.length; i++) {
+                weights[i] = 0.5 + (weights[i] / 2);
+            }
             players[1] = new StrategyPlayer(2, weights);
             players[0] = new UserPlayer(1);//RandomPlayer(2,System.currentTimeMillis());
             System.out.println("match : " + playMatch(players[0], players[1]));
         } else if (args.length > 0 && args[0].equals("selfPlay")) {
             Field field = Field.obtain();
-            MinMaxTensor lMinMaxTensor = new MinMaxTensor(1);
-            System.out.println(lMinMaxTensor.evaluate(field, 1));
             Player[] players = new Player[2];
             //HashMap<Integer,HashMap<Integer,Double>> memory=LearningPlayer.loadMemory(new File("test.csv"));
             //players[1]=new LearningPlayer(1,memory,false);
@@ -82,12 +79,13 @@ public class Main {
         int move = 0;
         while (true) {
             final long startTime = System.currentTimeMillis();
-            int take = (move % 2 == 0 ? p1 : p2).takeTurn(field);
+            int take = (move % 2 == 0 ? p1 : p2).takeTurn(field, move);
             //System.out.println((move%2==0?p1:p2).getPlayerId()+" - "+take);
             field.put(take, (move % 2 == 0 ? p1.mPlayerId : p2.mPlayerId));
-            if (field.getState(move % 2 + 1) != Field.STATE_OPEN) {
+            final int state = field.getState(move % 2 + 1);
+            if (state != Field.STATE_OPEN) {
                 Field.free(field);
-                return field.getState(p1.getPlayerId());
+                return state;
             }
             move++;
             //System.out.println("Move: " + move + " took: " + ((System.currentTimeMillis() - startTime) / 1000f) + "s");

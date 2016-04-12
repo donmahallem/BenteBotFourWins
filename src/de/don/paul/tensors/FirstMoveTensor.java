@@ -11,7 +11,7 @@ public class FirstMoveTensor extends Tensor {
     }
 
     @Override
-    public double evaluate(Field field, int take) {
+    public double evaluate(Field field, int take, int turn) {
         int nums = 0;
         for (int i = 0; i < Field.WIDTH; i++) {
             if (field.get(i) != 0 && (field.get(i + 7) == 0))

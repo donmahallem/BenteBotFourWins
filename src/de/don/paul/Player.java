@@ -11,7 +11,7 @@ public abstract class Player {
         this.mPlayerId = player;
     }
 
-    public abstract int takeTurn(Field field);
+    public abstract int takeTurn(Field field, int turn);
 
     public int getPlayerId() {
         return mPlayerId;

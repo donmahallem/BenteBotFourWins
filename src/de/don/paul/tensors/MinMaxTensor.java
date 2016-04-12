@@ -47,7 +47,7 @@ public class MinMaxTensor extends Tensor {
     }
 
     @Override
-    public double evaluate(Field field, int take) {
+    public double evaluate(Field field, int take, int turn) {
         return intTakeTurn(field, this.mPlayerId == 1 ? 2 : 1, 0, Double.MAX_VALUE, Double.MIN_VALUE);
     }
 

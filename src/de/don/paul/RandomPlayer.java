@@ -18,7 +18,7 @@ public class RandomPlayer extends Player {
     }
 
     @Override
-    public int takeTurn(Field field) {
+    public int takeTurn(Field field, int turn) {
         int take = this.mRandom.nextInt(Field.WIDTH);
         while (field.isColumnFull(take)) {
             take = this.mRandom.nextInt(Field.WIDTH);

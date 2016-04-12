@@ -11,7 +11,7 @@ public class WinningTensor extends Tensor {
     }
 
     @Override
-    public double evaluate(Field field, int take) {
+    public double evaluate(Field field, int take, int turn) {
         int y = field.getHighestCoin(take);
         if (checkSourounding(field, take, y))
             return 100;

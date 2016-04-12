@@ -13,7 +13,7 @@ public class UserPlayer extends Player {
 
 
     @Override
-    public int takeTurn(Field field) {
+    public int takeTurn(Field field, int turn) {
         field.print2D();
         System.out.println("Take Turn: ");
         try {

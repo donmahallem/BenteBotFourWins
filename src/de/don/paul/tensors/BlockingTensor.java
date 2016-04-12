@@ -12,7 +12,7 @@ public class BlockingTensor extends Tensor {
     }
 
     @Override
-    public double evaluate(Field field, int take) {
+    public double evaluate(Field field, int take, int turn) {
         final int enemyId = this.mPlayerId == 1 ? 2 : 1;
         int y = field.getHighestCoin(take);
         if (y == Field.HEIGHT - 1)

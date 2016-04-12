@@ -130,7 +130,7 @@ public class LearningPlayer extends Player {
     }
 
     @Override
-    public int takeTurn(Field field) {
+    public int takeTurn(Field field, int turn) {
         int take;
         final float rand = this.mRandom.nextFloat();
         if (this.mExploring && rand < 0.1f) {

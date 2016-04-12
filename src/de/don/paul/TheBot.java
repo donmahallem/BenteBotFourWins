@@ -41,7 +41,7 @@ public class TheBot {
                         weights[i] = 0.5 + (weights[i] / 2);
                     }
                     mPlayer = new StrategyPlayer(BotStatus.getYourBotId(), weights);
-                    System.out.println("place_disc " + mPlayer.takeTurn(f));
+                    System.out.println("place_disc " + mPlayer.takeTurn(f, BotStatus.getGameRound()));
                     Field.free(f);
                     break;
                 default:

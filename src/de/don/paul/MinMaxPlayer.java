@@ -11,7 +11,7 @@ public class MinMaxPlayer extends Player {
     }
 
     @Override
-    public int takeTurn(Field field) {
+    public int takeTurn(Field field, int turn) {
         final long startTime = System.currentTimeMillis();
         int take = -1;
         double highest = -Double.MIN_VALUE;

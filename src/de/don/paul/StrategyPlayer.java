@@ -34,13 +34,13 @@ public class StrategyPlayer extends Player {
             f.copy(field);
             f.put(i, this.mPlayerId);
             double val2 = calcColumn(f, i, turn);
-            System.err.println("Column - " + i + " = " + val2);
+            //System.err.println("Column - " + i + " = " + val2);
             if (take == -1 || val < val2) {
                 take = i;
                 val = val2;
             }
         }
-        System.err.println("Took " + ((System.currentTimeMillis() - startTime) / 1000d) + "s");
+        //System.err.println("Took " + ((System.currentTimeMillis() - startTime) / 1000d) + "s");
         return take;
     }
 
@@ -49,7 +49,7 @@ public class StrategyPlayer extends Player {
         for (Tensor lTensor : this.mTensorList) {
             double v = lTensor.evaluate(pF, take, turn);
             //System.out.println(lTensor.getName()+" - "+v);
-            System.err.println(lTensor.getName() + " - " + v);
+            //System.err.println(lTensor.getName() + " - " + v);
             res += v;
         }
         return res / (1d * this.mTensorList.size());
